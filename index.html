@@ -215,8 +215,6 @@
     </div>
     <div class="meta">
       <div id="meta-info"></div>
-      <button id="refresh-btn" style="margin-top:8px; padding:7px 14px; border-radius:20px; border:1px solid var(--gold); background:var(--paper); color:var(--oud); font-size:12px; cursor:pointer;">Refresh data via Claude</button>
-      <div id="refresh-note" style="font-size:10.5px; color:var(--ink-soft); margin-top:5px; max-width:220px;"></div>
     </div>
   </header>
 
@@ -386,19 +384,6 @@ document.querySelectorAll('.chip').forEach(chip => {
 });
 document.getElementById('sort-select').addEventListener('change', e => { sortMode = e.target.value; render(); });
 document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value; render(); });
-
-const refreshBtn = document.getElementById('refresh-btn');
-const refreshNote = document.getElementById('refresh-note');
-const UPDATE_PROMPT = "Run the update";
-refreshBtn.addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText(UPDATE_PROMPT);
-    refreshNote.textContent = 'Copied "' + UPDATE_PROMPT + '" — paste it into Claude (opening now).';
-  } catch (e) {
-    refreshNote.textContent = 'Copy failed — just type "' + UPDATE_PROMPT + '" into Claude (opening now).';
-  }
-  window.open('https://claude.ai/new', '_blank');
-});
 
 render();
 </script>
