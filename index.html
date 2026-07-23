@@ -282,6 +282,7 @@
       <div class="chip" data-cat="Global Luxury Designer">Global Luxury Designer</div>
       <div class="chip" data-cat="Celebrity / Lifestyle">Celebrity-Lifestyle</div>
       <div class="chip" data-cat="Value & Everyday Brands">Value &amp; Everyday</div>
+      <div class="chip" id="under10-chip" style="border-color:var(--gold);">Under $10</div>
       <select id="sort-select">
         <option value="price-desc">Price: high to low</option>
         <option value="price-asc">Price: low to high</option>
@@ -388,6 +389,7 @@ let activeCat = 'all';
 let sortMode = 'price-desc';
 let searchTerm = '';
 let selectedBrand = null;
+let underTen = false;
 
 // --- Top 50 brands by SKU count (across all categories) ---
 const allRanked = Object.entries(designerCount)
@@ -420,6 +422,7 @@ function render() {
   let rows = CATALOG;
   if (selectedBrand) rows = rows.filter(r => r[0] === selectedBrand);
   else if (activeCat !== 'all') rows = rows.filter(r => r[1] === activeCat);
+  if (underTen) rows = rows.filter(r => r[5] < 10);
   if (searchTerm) {
     const t = searchTerm.toLowerCase();
     rows = rows.filter(r => r[0].toLowerCase().includes(t) || r[2].toLowerCase().includes(t) || r[3].toLowerCase().includes(t));
@@ -444,18 +447,26 @@ function render() {
     </tr>`;
   }).join('');
   const brandNote = selectedBrand ? ` — filtered to ${selectedBrand}` : '';
-  document.getElementById('result-count').textContent = `${total.toLocaleString()} matching SKU${total===1?'':'s'}${brandNote}`;
+  const underTenNote = underTen ? ` — under $10` : '';
+  document.getElementById('result-count').textContent = `${total.toLocaleString()} matching SKU${total===1?'':'s'}${brandNote}${underTenNote}`;
   document.getElementById('page-note').style.display = total > 200 ? 'inline' : 'none';
 }
 
 document.querySelectorAll('.chip').forEach(chip => {
+  if (chip.id === 'under10-chip') return;
   chip.addEventListener('click', () => {
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.chip').forEach(c => { if (c.id !== 'under10-chip') c.classList.remove('active'); });
     chip.classList.add('active');
     activeCat = chip.dataset.cat;
     if (selectedBrand) { selectedBrand = null; renderBrandPills(); }
     render();
   });
+});
+
+document.getElementById('under10-chip').addEventListener('click', () => {
+  underTen = !underTen;
+  document.getElementById('under10-chip').classList.toggle('active');
+  render();
 });
 document.getElementById('sort-select').addEventListener('change', e => { sortMode = e.target.value; render(); });
 document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value; render(); });
