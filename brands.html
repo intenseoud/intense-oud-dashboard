@@ -159,8 +159,7 @@
           <th>Category</th>
           <th style="text-align:right">SKUs</th>
           <th style="text-align:right">Avg price</th>
-          <th style="text-align:right">Min</th>
-          <th style="text-align:right">Max</th>
+          <th style="text-align:right">Price range</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
@@ -237,8 +236,7 @@ function render() {
       <td><span class="cat-pill ${CAT_CLASS[c]}">${CAT_SHORT[c]}</span></td>
       <td class="num-cell">${count}</td>
       <td class="price-cell">${fmt(avg)}</td>
-      <td class="price-cell">${fmt(min)}</td>
-      <td class="price-cell">${fmt(max)}</td>
+      <td class="price-cell">${min === max ? fmt(min) : fmt(min) + ' – ' + fmt(max)}</td>
     </tr>`;
   }).join('');
   document.getElementById('result-count').textContent = `${rows.length.toLocaleString()} brand${rows.length===1?'':'s'} shown`;
@@ -252,7 +250,11 @@ let selectedBrand = null;
 function showSkus(brand) {
   selectedBrand = brand;
   const skus = CATALOG.filter(r => r[0] === brand).sort((a,b) => b[5]-a[5]);
-  document.getElementById('sku-panel-title').textContent = `${brand} — ${skus.length} SKU${skus.length===1?'':'s'}`;
+  const prices = skus.map(r => r[5]);
+  const minP = Math.min(...prices);
+  const maxP = Math.max(...prices);
+  const rangeText = minP === maxP ? fmt(minP) : `${fmt(minP)} – ${fmt(maxP)}`;
+  document.getElementById('sku-panel-title').textContent = `${brand} — ${skus.length} SKU${skus.length===1?'':'s'} — ${rangeText}`;
   document.getElementById('sku-table-body').innerHTML = skus.map(r => {
     const [d,c,code,desc,o,p] = r;
     return `<tr>
