@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Intense Oud — All Brands</title>
+<style>
+  :root {
+    --oud: #241812;
+    --gold: #b8863f;
+    --cream: #faf6ef;
+    --paper: #ffffff;
+    --line: #e6ddc9;
+    --ink: #241812;
+    --ink-soft: #6b5d4d;
+    --heritage: #7a4a2a;
+    --designer: #8a6d1e;
+    --celeb: #a5455a;
+    --value: #4a6b52;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 64px; }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+  .back-link:hover { color: var(--gold); }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid var(--oud);
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+  .brand-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin: 4px 0 0;
+    color: var(--oud);
+  }
+  .meta { text-align: right; font-size: 12px; color: var(--ink-soft); }
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 22px;
+  }
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .controls input[type=text] {
+    flex: 1;
+    min-width: 220px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--cream);
+  }
+  .chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--ink); }
+  .chip.active { background: var(--oud); border-color: var(--oud); color: var(--cream); }
+  select {
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    padding: 9px 10px;
+    border-bottom: 2px solid var(--oud);
+    white-space: nowrap;
+  }
+  tbody td { padding: 9px 10px; border-bottom: 1px solid var(--line); }
+  tbody tr:hover { background: #fbf6ec; }
+  .rank-cell { color: var(--ink-soft); font-variant-numeric: tabular-nums; width: 32px; }
+  .num-cell { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--oud); }
+  .price-cell { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  .cat-pill { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+  .cat-Middle { background: #f1e2d3; color: var(--heritage); }
+  .cat-Global { background: #f0ead1; color: var(--designer); }
+  .cat-Celebrity { background: #f6dee3; color: var(--celeb); }
+  .cat-Value { background: #e2ead9; color: var(--value); }
+  .table-footer { margin-top: 12px; font-size: 12px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="./index.html">&larr; Back to dashboard</a>
+  <header>
+    <div>
+      <div class="brand-eyebrow">Intense Oud &middot; AKA Comp Solutions</div>
+      <h1>All brands</h1>
+    </div>
+    <div class="meta" id="meta-info"></div>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search brand name...">
+      <div class="chip active" data-cat="all">All</div>
+      <div class="chip" data-cat="Middle East Heritage">Middle East Heritage</div>
+      <div class="chip" data-cat="Global Luxury Designer">Global Luxury Designer</div>
+      <div class="chip" data-cat="Celebrity / Lifestyle">Celebrity-Lifestyle</div>
+      <div class="chip" data-cat="Value & Everyday Brands">Value &amp; Everyday</div>
+      <select id="sort-select">
+        <option value="count-desc">SKU count: high to low</option>
+        <option value="count-asc">SKU count: low to high</option>
+        <option value="name-asc">Brand: A to Z</option>
+        <option value="avg-desc">Avg price: high to low</option>
+      </select>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th style="text-align:right">SKUs</th>
+          <th style="text-align:right">Avg price</th>
+          <th style="text-align:right">Min</th>
+          <th style="text-align:right">Max</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="table-footer" id="result-count"></div>
+  </div>
+</div>
+
+<script>
+const BRANDS = [["Cuba","Value & Everyday Brands",233,4.67,0.75,36],["Al Haramain","Middle East Heritage",214,24.8,5.5,126],["Sterling","Value & Everyday Brands",147,11.86,7,17.5],["New Brand","Value & Everyday Brands",135,4.43,2,22],["Guess","Value & Everyday Brands",130,10.94,0.1,24.5],["Rasasi","Middle East Heritage",108,18.44,2.25,69],["Paco Rabanne","Global Luxury Designer",84,54.75,19,107.5],["Carolina Herrera","Global Luxury Designer",83,58.63,14.75,113.5],["Khalis Perfumes","Middle East Heritage",71,12.11,9.25,16.5],["Anfar","Middle East Heritage",67,17.17,0.3,25],["Sterling Perfumes","Value & Everyday Brands",64,21.52,2.34,41.5],["Perry Ellis","Global Luxury Designer",63,17.18,4.75,26],["Lattafa","Middle East Heritage",62,13.46,1.9,23.9],["Hermes","Global Luxury Designer",58,51.31,29.5,78.25],["Armaf","Middle East Heritage",58,19.21,7.5,42],["Azha","Middle East Heritage",54,14.38,7.5,21.9],["Unbranded / Generic","Value & Everyday Brands",53,18.53,0.25,120],["Donna Karan","Global Luxury Designer",52,23.06,6.25,68],["Sterling Parfums","Value & Everyday Brands",51,15.43,8.25,46.5],["Dolce & Gabbana","Global Luxury Designer",50,35.98,21,51],["Jean Paul Gaultier","Global Luxury Designer",50,64.57,37.75,99],["Fragluxe","Value & Everyday Brands",47,3.24,3,3.25],["Calvin Klein","Global Luxury Designer",44,17.72,5.85,39],["Lomani","Value & Everyday Brands",41,8.07,4.15,12.7],["Elizabeth Arden","Global Luxury Designer",36,10.16,4.19,20.5],["Salvatore Ferragamo","Global Luxury Designer",36,21.03,8,35],["Hugo Boss","Global Luxury Designer",34,26.8,5.7,45.5],["Liz Claiborne","Global Luxury Designer",34,11.89,7.55,22.5],["Mavive","Value & Everyday Brands",33,9.85,3.5,14.5],["Police","Value & Everyday Brands",33,9.47,6.25,13.5],["Carven","Value & Everyday Brands",31,15.2,0.5,30],["Oscar De La Renta","Global Luxury Designer",28,19.91,10.5,33],["Xerjoff","Global Luxury Designer",28,169.38,88.5,320],["Gres","Value & Everyday Brands",28,8.17,3.99,11.5],["Versace","Global Luxury Designer",27,53.53,24.25,87],["Bvlgari","Global Luxury Designer",26,51.26,24,79],["Tumi","Value & Everyday Brands",26,40.71,30,53.5],["Cristiano Ronaldo","Celebrity / Lifestyle",25,15.81,0.75,36],["Creed","Global Luxury Designer",25,178.8,99.5,234],["Giorgio Armani","Global Luxury Designer",25,58.7,11.5,93.5],["Paris Hilton","Celebrity / Lifestyle",23,13.76,0.5,26.5],["Givenchy","Global Luxury Designer",23,39.92,23.5,65],["Hamidi","Middle East Heritage",23,13.1,10.5,18.5],["Maison Margiela","Global Luxury Designer",22,48.52,7,81.5],["Elizabeth Taylor","Celebrity / Lifestyle",21,11.33,6.3,23.5],["Burberry","Global Luxury Designer",21,50.74,20.75,81.5],["Roberto Cavalli","Global Luxury Designer",20,33.79,15,70],["Sarah Jessica Parker","Celebrity / Lifestyle",19,10.03,4,18.5],["Issey Miyake","Global Luxury Designer",19,31.98,13.45,46],["Bentley","Value & Everyday Brands",19,22.8,10,159],["Fila","Value & Everyday Brands",19,7.95,4,12.5],["Ariana Grande","Celebrity / Lifestyle",18,25.79,5.25,37],["Afnan Perfumes","Middle East Heritage",18,18.34,11.9,27],["New Brand Perfumes","Value & Everyday Brands",17,8.79,4,22],["Gucci","Global Luxury Designer",16,55.26,34,85],["Narciso Rodriguez","Global Luxury Designer",16,40.4,29,54],["Ajyad","Middle East Heritage",16,11.61,11.5,12.5],["Sezan","Middle East Heritage",16,15.94,12.5,20],["Christian Dior","Global Luxury Designer",15,94.47,69,134.5],["Davidoff","Global Luxury Designer",15,15.98,6.15,25.5],["Marc Jacobs","Global Luxury Designer",15,45.54,7.35,67],["Nina Ricci","Global Luxury Designer",15,29.87,14.35,41],["Banana Republic","Value & Everyday Brands",15,11.51,8,13],["Jaguar","Value & Everyday Brands",15,7.16,5.4,9],["Rochas","Global Luxury Designer",14,19.2,14.5,24.5],["Merve","Middle East Heritage",14,20.54,20,21],["Orientica","Middle East Heritage",14,39.9,23,58.25],["Swiss Arabian","Middle East Heritage",14,14.95,8.5,28.25],["Adidas","Value & Everyday Brands",14,5.61,2.5,8.5],["Bellavita","Value & Everyday Brands",14,12.64,10.5,17.5],["Eze","Value & Everyday Brands",14,9.11,7.5,10.5],["Lacoste","Value & Everyday Brands",14,20.98,13.75,30.5],["Rihanna","Celebrity / Lifestyle",13,1.91,0.1,9.5],["Cacharel","Global Luxury Designer",13,16.05,0.35,26.9],["Lalique","Global Luxury Designer",13,15.62,12.5,19.5],["Mont Blanc","Global Luxury Designer",13,32.67,12.25,52],["Ted Lapidus","Global Luxury Designer",13,10.31,6.5,14.5],["Azzaro","Global Luxury Designer",12,25.74,12.4,48.5],["Prada","Global Luxury Designer",12,61.96,16.75,97],["Chic N Glam","Middle East Heritage",12,7.58,4,9.75],["Estee Lauder","Global Luxury Designer",11,26.88,14.75,35.5],["Thierry Mugler","Global Luxury Designer",11,33.52,6.5,60.75],["Yves Saint Laurent","Global Luxury Designer",11,83.09,55,111],["L'Orientale Fragrances","Middle East Heritage",11,30.55,28,31],["Britney Spears","Celebrity / Lifestyle",10,10.97,3.2,17.5],["Acqua Di Parma","Global Luxury Designer",10,70.1,41.5,115],["Boucheron","Global Luxury Designer",10,20.3,16.5,25],["Clinique","Global Luxury Designer",10,18.71,13,33],["Emanuel Ungaro","Global Luxury Designer",10,9.28,4,18.75],["Jo Malone","Global Luxury Designer",10,73.67,42.5,86.5],["LalIque","Global Luxury Designer",10,14.17,5.75,18.5],["Ralph Lauren","Global Luxury Designer",10,26.16,13.9,36.4],["Assala Prime","Middle East Heritage",10,11.41,6,15],["Nasma Perfumes","Middle East Heritage",10,7.99,7.99,7.99],["Reef Perfumes","Middle East Heritage",10,35.35,28.5,43],["New Brand Prestige","Value & Everyday Brands",10,7.45,4.5,9],["Tous","Value & Everyday Brands",10,21.82,14.75,37],["Chloe","Global Luxury Designer",9,39.0,28.25,60],["Christian Siriano","Global Luxury Designer",9,11.69,8.75,13.75],["Dkny","Global Luxury Designer",9,12.03,6.25,26.5],["Tory Burch","Global Luxury Designer",9,43.14,26.75,55.5],["Jovan","Value & Everyday Brands",9,3.3,1.55,6.15],["Lionel Richie","Celebrity / Lifestyle",8,10.44,8.5,13.5],["Michael Jordan","Celebrity / Lifestyle",8,6.3,1,11.5],["J. Del Pozo","Global Luxury Designer",8,19.27,12,31],["Kenzo","Global Luxury Designer",8,29.29,13.75,42],["Vanderbilt","Global Luxury Designer",8,6.22,4.5,7.25],["Bebe","Value & Everyday Brands",8,9.69,4,13],["Dumont","Value & Everyday Brands",8,22.09,12.25,29],["Juicy Couture","Value & Everyday Brands",8,22.53,7.5,38],["The Master Perfumer","Value & Everyday Brands",8,5.5,2.5,9],["Paloma Picasso","Celebrity / Lifestyle",7,12.79,7,19.5],["Atkinsons","Global Luxury Designer",7,76.71,61.5,90.5],["Joop","Global Luxury Designer",7,16.44,11.35,23.5],["Myrurgia","Global Luxury Designer",7,3.03,2.9,3.25],["Paul Sebastian","Global Luxury Designer",7,12.76,7.2,16.9],["Valentino","Global Luxury Designer",7,70.61,52,92],["Ajmal","Middle East Heritage",7,18.04,11,25.5],["Osma Perfumes","Middle East Heritage",7,21.36,0.5,30],["Risala","Middle East Heritage",7,11.79,8.5,14.25],["Prep","Value & Everyday Brands",7,5.21,3.75,7.5],["True Religion","Value & Everyday Brands",7,16.27,15.5,17],["Jennifer Lopez","Celebrity / Lifestyle",6,17.2,12.5,21.5],["Jessica McClintock","Celebrity / Lifestyle",6,13.24,10.5,19.5],["Alfred Sung","Global Luxury Designer",6,11.46,7.25,16.25],["Coach","Global Luxury Designer",6,29.62,21.2,46.5],["Escada","Global Luxury Designer",6,21.28,15,24],["Jimmy Choo","Global Luxury Designer",6,26.83,18,53],["John Varvatos","Global Luxury Designer",6,24.92,18.5,29],["Michael Kors","Global Luxury Designer",6,45.52,21,55],["Moschino","Global Luxury Designer",6,27.96,9.75,37],["Afnan","Middle East Heritage",6,17.78,15,24],["Al Malakia","Middle East Heritage",6,19.88,17.9,22],["Muhrah","Middle East Heritage",6,29.0,29,29],["Animale","Value & Everyday Brands",6,19.92,15.9,26],["Hollister","Value & Everyday Brands",6,11.33,11,11.5],["Leonardo","Value & Everyday Brands",6,6.75,4.5,17],["Katy Perry","Celebrity / Lifestyle",5,14.9,10.5,20],["Bogart","Global Luxury Designer",5,6.45,2.25,15.5],["Christian Audigier","Global Luxury Designer",5,11.61,3.5,16.8],["Derek Lam","Global Luxury Designer",5,23.6,20,26],["Guy Laroche","Global Luxury Designer",5,10.3,4.25,16],["Jacomo","Global Luxury Designer",5,10.6,5,17.5],["Jacques Bogart","Global Luxury Designer",5,13.2,10.25,16.5],["Kate Spade","Global Luxury Designer",5,2.16,0.25,5],["Tiziana Terenzi","Global Luxury Designer",5,108.8,74,158],["Trussardi","Global Luxury Designer",5,16.6,0.25,28],["Van Gils","Global Luxury Designer",5,3.4,2.5,5],["Viktor & Rolf","Global Luxury Designer",5,35.45,8.75,59.5],["Next Generation Perfumes","Middle East Heritage",5,6.05,4,7.75],["Alyssa Ashley","Value & Everyday Brands",5,11.45,8.75,17],["Jordache","Value & Everyday Brands",5,4.0,3.5,4.75],["Nautica","Value & Everyday Brands",5,8.87,7.75,9.75],["Jessica Simpson","Celebrity / Lifestyle",4,13.65,10.1,17],["Sean John","Celebrity / Lifestyle",4,20.88,16.5,24.5],["YZY Perfume","Celebrity / Lifestyle",4,5.2,5.05,5.25],["Emporio Armani","Global Luxury Designer",4,56.56,39,65.5],["Fred Hayman","Global Luxury Designer",4,15.31,9.5,20.75],["Guerlain","Global Luxury Designer",4,56.5,32,71],["Halston","Global Luxury Designer",4,9.67,6.75,13.5],["Just Cavalli","Global Luxury Designer",4,7.56,7.5,7.75],["Maison Alhambra","Middle East Heritage",4,9.88,8.75,12],["French Connection UK","Value & Everyday Brands",4,7.12,6.75,7.5],["Marc Ecko","Value & Everyday Brands",4,7.42,0.74,9.75],["Antonio Puig","Global Luxury Designer",3,7.75,7.75,7.75],["Cartier","Global Luxury Designer",3,67.33,57,77],["Coty","Global Luxury Designer",3,5.73,4.2,8.5],["Dunhill","Global Luxury Designer",3,14.5,5.5,20],["Geoffrey Beene","Global Luxury Designer",3,13.32,11.95,14],["Giorgio Beverly Hills","Global Luxury Designer",3,10.75,8.45,14.4],["Gloria Vanderbilt","Global Luxury Designer",3,6.5,5.5,7.25],["Initio","Global Luxury Designer",3,174.5,147,188.5],["Lancome","Global Luxury Designer",3,67.33,64,72],["Lanvin","Global Luxury Designer",3,17.08,14.5,18.75],["Nishane","Global Luxury Designer",3,96.67,93.5,101.5],["Parfums de Marly","Global Luxury Designer",3,184.67,171.5,199],["Revlon","Global Luxury Designer",3,4.82,3.45,6.75],["Tommy Hilfiger","Global Luxury Designer",3,20.25,17.25,25.5],["Aviator","Value & Everyday Brands",3,8.25,8.25,8.25],["Ed Hardy","Value & Everyday Brands",3,11.18,3.75,16.8],["Flavia","Value & Everyday Brands",3,11.92,9.75,13.5],["Fresh Up","Value & Everyday Brands",3,1.0,1,1],["Missguided","Value & Everyday Brands",3,10.5,6.5,18],["Pino Silvestre","Value & Everyday Brands",3,5.63,5,6.9],["Replay","Value & Everyday Brands",3,3.67,3.5,4],["So...?","Value & Everyday Brands",3,7.0,7,7],["Sterling Parfumes","Value & Everyday Brands",3,25.73,12.95,35.25],["Swiss Army","Value & Everyday Brands",3,7.63,5.75,9.4],["Antonio Banderas","Celebrity / Lifestyle",2,11.7,9.9,13.5],["David Beckham","Celebrity / Lifestyle",2,6.38,5,7.75],["Houbigant","Global Luxury Designer",2,8.75,8.25,9.25],["Karl Lagerfeld","Global Luxury Designer",2,15.32,13.7,16.95],["Laura Biagiotti","Global Luxury Designer",2,8.75,1,16.5],["Pierre Cardin","Global Luxury Designer",2,4.25,2,6.5],["Roja Dove","Global Luxury Designer",2,233.0,180,286],["Romeo Gigli","Global Luxury Designer",2,8.5,6.5,10.5],["Thomas Kosmala","Global Luxury Designer",2,78.0,78,78],["Tiffany and Co.","Global Luxury Designer",2,46.62,44,49.25],["Fragrance World","Middle East Heritage",2,9.25,9.25,9.25],["New Brand Oriental","Middle East Heritage",2,5.75,5.75,5.75],["Aquolina","Value & Everyday Brands",2,11.75,10.5,13],["Armand Basi","Value & Everyday Brands",2,14.5,13.5,15.5],["Artes Florales","Value & Everyday Brands",2,11.25,7.5,15],["Betsey Johnson","Value & Everyday Brands",2,10.72,8.95,12.5],["Bruno Banani","Value & Everyday Brands",2,7.0,7,7],["Completely Bare","Value & Everyday Brands",2,0.2,0.15,0.25],["Curve","Value & Everyday Brands",2,13.25,13,13.5],["Dis Lui","Value & Everyday Brands",2,4.88,4.5,5.25],["Evyan","Value & Everyday Brands",2,9.75,7.5,12],["Just Juice","Value & Everyday Brands",2,13.0,13,13],["Kenneth Cole","Value & Everyday Brands",2,16.62,13.75,19.5],["Milton Lloyd","Value & Everyday Brands",2,8.0,6.5,9.5],["Perfumers Workshop","Value & Everyday Brands",2,7.12,7,7.25],["Pink Sugar","Value & Everyday Brands",2,5.88,0.75,11],["United Colors Of Benetton","Value & Everyday Brands",2,8.75,8.5,9],["XOXO","Value & Everyday Brands",2,9.75,9.75,9.75],["Billie Eilish","Celebrity / Lifestyle",1,37.0,37,37],["Fenty","Celebrity / Lifestyle",1,45.5,45.5,45.5],["Messi","Celebrity / Lifestyle",1,23.25,23.25,23.25],["Vera Wang","Celebrity / Lifestyle",1,13.0,13,13],["Elie Saab","Global Luxury Designer",1,35.0,35,35],["Hanae Mori","Global Luxury Designer",1,5.0,5,5],["Missoni","Global Luxury Designer",1,25.5,25.5,25.5],["Molyneux","Global Luxury Designer",1,14.5,14.5,14.5],["Royal Copenhagen","Global Luxury Designer",1,5.25,5.25,5.25],["Shiseido","Global Luxury Designer",1,35.75,35.75,35.75],["Tom Ford","Global Luxury Designer",1,195.0,195,195],["Vicky Tiel","Global Luxury Designer",1,2.0,2,2],["Assala","Middle East Heritage",1,8.4,8.4,8.4],["Crown Perfumes","Middle East Heritage",1,1.9,1.9,1.9],["Dyrose","Middle East Heritage",1,31.0,31,31],["King of Kings","Middle East Heritage",1,33.0,33,33],["Maison De Parfum","Middle East Heritage",1,82.5,82.5,82.5],["Amando","Value & Everyday Brands",1,4.5,4.5,4.5],["Assurance","Value & Everyday Brands",1,3.0,3,3],["Aubusson","Value & Everyday Brands",1,7.5,7.5,7.5],["Borghese","Value & Everyday Brands",1,12.5,12.5,12.5],["Brut","Value & Everyday Brands",1,5.25,5.25,5.25],["Byblos","Value & Everyday Brands",1,13.5,13.5,13.5],["Calvin klein","Value & Everyday Brands",1,17.7,17.7,17.7],["Chole","Value & Everyday Brands",1,28.0,28,28],["Dana","Value & Everyday Brands",1,2.5,2.5,2.5],["Dsquared","Value & Everyday Brands",1,17.5,17.5,17.5],["Ellen Tracy","Value & Everyday Brands",1,7.0,7,7],["Franck Olivier","Value & Everyday Brands",1,8.0,8,8],["Glamour & Heels","Value & Everyday Brands",1,5.25,5.25,5.25],["Ignacio Figueras","Value & Everyday Brands",1,15.25,15.25,15.25],["Izod","Value & Everyday Brands",1,7.75,7.75,7.75],["Jerome Moments","Value & Everyday Brands",1,0.75,0.75,0.75],["Kruidvat","Value & Everyday Brands",1,6.5,6.5,6.5],["Lascad","Value & Everyday Brands",1,20.0,20,20],["Lolita Lempicka","Value & Everyday Brands",1,20.0,20,20],["Lucky Brand","Value & Everyday Brands",1,7.55,7.55,7.55],["Luxe","Value & Everyday Brands",1,8.25,8.25,8.25],["Mercedes-Benz","Value & Everyday Brands",1,22.5,22.5,22.5],["Mochino","Value & Everyday Brands",1,39.5,39.5,39.5],["Parfums De Gres","Value & Everyday Brands",1,5.5,5.5,5.5],["Paris Bleu","Value & Everyday Brands",1,5.5,5.5,5.5],["Philosophy","Value & Everyday Brands",1,19.0,19,19],["Princesse Marina De Bourbon","Value & Everyday Brands",1,20.0,20,20],["Replica","Value & Everyday Brands",1,63.5,63.5,63.5],["Reyane Tradition","Value & Everyday Brands",1,16.0,16,16],["Roberto Capucci","Value & Everyday Brands",1,10.0,10,10],["Rudimental","Value & Everyday Brands",1,7.0,7,7],["Samba","Value & Everyday Brands",1,7.25,7.25,7.25],["St.Studio","Value & Everyday Brands",1,5.0,5,5],["Steve Madden","Value & Everyday Brands",1,19.0,19,19],["Therme Skincare","Value & Everyday Brands",1,1.25,1.25,1.25],["Tom Tailor","Value & Everyday Brands",1,4.75,4.75,4.75],["Tommy Bahama","Value & Everyday Brands",1,16.5,16.5,16.5],["Umbro","Value & Everyday Brands",1,2.0,2,2],["United Colors of Benetton","Value & Everyday Brands",1,4.25,4.25,4.25],["Velvet Patchouli","Value & Everyday Brands",1,5.0,5,5],["Vida Best","Value & Everyday Brands",1,29.5,29.5,29.5],["Visconti Di Modrone","Value & Everyday Brands",1,10.0,10,10],["Yves Saint laurent","Value & Everyday Brands",1,109.0,109,109],["Zodiac","Value & Everyday Brands",1,14.0,14,14]];
+// row: [designer, category, count, avgPrice, minPrice, maxPrice]
+
+const CAT_SHORT = {
+  "Middle East Heritage": "Middle East Heritage",
+  "Global Luxury Designer": "Global Luxury Designer",
+  "Celebrity / Lifestyle": "Celebrity-Lifestyle",
+  "Value & Everyday Brands": "Value & Everyday"
+};
+const CAT_CLASS = {
+  "Middle East Heritage": "cat-Middle",
+  "Global Luxury Designer": "cat-Global",
+  "Celebrity / Lifestyle": "cat-Celebrity",
+  "Value & Everyday Brands": "cat-Value"
+};
+
+function fmt(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+document.getElementById('meta-info').textContent = `${BRANDS.length} brands · 2026-07-23`;
+
+let activeCat = 'all';
+let sortMode = 'count-desc';
+let searchTerm = '';
+
+function render() {
+  let rows = BRANDS;
+  if (activeCat !== 'all') rows = rows.filter(r => r[1] === activeCat);
+  if (searchTerm) {
+    const t = searchTerm.toLowerCase();
+    rows = rows.filter(r => r[0].toLowerCase().includes(t));
+  }
+  rows = rows.slice();
+  switch (sortMode) {
+    case 'count-desc': rows.sort((a,b) => b[2]-a[2]); break;
+    case 'count-asc': rows.sort((a,b) => a[2]-b[2]); break;
+    case 'name-asc': rows.sort((a,b) => a[0].localeCompare(b[0])); break;
+    case 'avg-desc': rows.sort((a,b) => b[3]-a[3]); break;
+  }
+  document.getElementById('table-body').innerHTML = rows.map((r, i) => {
+    const [d,c,count,avg,min,max] = r;
+    return `<tr>
+      <td class="rank-cell">${i+1}</td>
+      <td>${d}</td>
+      <td><span class="cat-pill ${CAT_CLASS[c]}">${CAT_SHORT[c]}</span></td>
+      <td class="num-cell">${count}</td>
+      <td class="price-cell">${fmt(avg)}</td>
+      <td class="price-cell">${fmt(min)}</td>
+      <td class="price-cell">${fmt(max)}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('result-count').textContent = `${rows.length.toLocaleString()} brand${rows.length===1?'':'s'} shown`;
+}
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeCat = chip.dataset.cat;
+    render();
+  });
+});
+document.getElementById('sort-select').addEventListener('change', e => { sortMode = e.target.value; render(); });
+document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value; render(); });
+
+render();
+</script>
+</body>
+</html>
