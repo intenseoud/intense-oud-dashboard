@@ -381,6 +381,11 @@ document.getElementById('top-designers').innerHTML = topDesigners.map(t =>
   `<div class="td-row"><div><div class="td-name">${t.d}</div><div class="td-cat">${CAT_SHORT[t.c]}</div></div><div class="td-count">${t.count}</div></div>`
 ).join('');
 
+let activeCat = 'all';
+let sortMode = 'price-desc';
+let searchTerm = '';
+let selectedBrand = null;
+
 // --- Top 20 brands (weighted toward Value & Everyday) ---
 // Rank by SKU count within Value & Everyday first, then fill any remaining slots
 // with the next-biggest brands overall so the list always has 20 entries.
@@ -420,11 +425,6 @@ function renderBrandPills() {
 renderBrandPills();
 
 // --- Table / filter / search ---
-let activeCat = 'all';
-let sortMode = 'price-desc';
-let searchTerm = '';
-let selectedBrand = null;
-
 function render() {
   let rows = CATALOG;
   if (selectedBrand) rows = rows.filter(r => r[0] === selectedBrand);
