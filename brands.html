@@ -171,14 +171,46 @@
       <h2 style="margin:0; font-family:Georgia,serif; font-weight:400; font-size:18px; color:var(--oud);" id="sku-panel-title">SKUs</h2>
       <a href="#" id="sku-panel-close" style="font-size:12.5px; color:var(--ink-soft); text-decoration:none;">Close &times;</a>
     </div>
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
-      <span style="font-size:12.5px; color:var(--ink-soft);">Filter by price:</span>
-      <input type="number" id="price-min" placeholder="Min $" style="width:90px; padding:7px 9px; border:1px solid var(--line); border-radius:4px; font-size:13px; background:var(--cream);">
-      <span style="color:var(--ink-soft); font-size:12.5px;">to</span>
-      <input type="number" id="price-max" placeholder="Max $" style="width:90px; padding:7px 9px; border:1px solid var(--line); border-radius:4px; font-size:13px; background:var(--cream);">
-      <a href="#" id="price-clear" style="font-size:12px; color:var(--gold); text-decoration:none; margin-left:4px;">Clear</a>
-      <span id="sku-filter-count" style="font-size:12px; color:var(--ink-soft); margin-left:auto;"></span>
+    <div class="price-filter" style="margin-bottom:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+        <span style="font-size:12.5px; color:var(--ink-soft); font-weight:600;">Filter by price</span>
+        <span id="price-filter-readout" style="font-size:13px; color:var(--oud); font-weight:600;"></span>
+      </div>
+      <div class="slider-track-wrap" style="position:relative; height:32px;">
+        <div class="slider-track" style="position:absolute; top:14px; left:0; right:0; height:4px; background:var(--line); border-radius:2px;"></div>
+        <div class="slider-fill" id="slider-fill" style="position:absolute; top:14px; height:4px; background:var(--gold); border-radius:2px;"></div>
+        <input type="range" id="price-min" style="position:absolute; top:0; width:100%; margin:0; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none;">
+        <input type="range" id="price-max" style="position:absolute; top:0; width:100%; margin:0; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none;">
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+        <span id="sku-filter-count" style="font-size:12px; color:var(--ink-soft);"></span>
+        <a href="#" id="price-clear" style="font-size:12px; color:var(--gold); text-decoration:none;">Reset range</a>
+      </div>
     </div>
+    <style>
+      .price-filter input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        pointer-events: auto;
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: var(--oud);
+        border: 2px solid var(--paper);
+        box-shadow: 0 0 0 1px var(--line);
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .price-filter input[type=range]::-moz-range-thumb {
+        pointer-events: auto;
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: var(--oud);
+        border: 2px solid var(--paper);
+        box-shadow: 0 0 0 1px var(--line);
+        cursor: pointer;
+      }
+      .price-filter input[type=range]::-webkit-slider-runnable-track { background: transparent; }
+      .price-filter input[type=range]::-moz-range-track { background: transparent; }
+    </style>
     <table>
       <thead>
         <tr>
@@ -253,25 +285,55 @@ function render() {
 
 let selectedBrand = null;
 let brandSkus = [];
+let brandMinPrice = 0;
+let brandMaxPrice = 0;
 
 function showSkus(brand) {
   selectedBrand = brand;
   brandSkus = CATALOG.filter(r => r[0] === brand).sort((a,b) => b[5]-a[5]);
+  const prices = brandSkus.map(r => r[5]);
+  brandMinPrice = Math.min(...prices);
+  brandMaxPrice = Math.max(...prices);
   document.getElementById('sku-panel-title').textContent = `${brand} — ${brandSkus.length} SKU${brandSkus.length===1?'':'s'}`;
-  document.getElementById('price-min').value = '';
-  document.getElementById('price-max').value = '';
+
+  const step = brandMaxPrice - brandMinPrice > 50 ? 1 : 0.05;
+  const minSlider = document.getElementById('price-min');
+  const maxSlider = document.getElementById('price-max');
+  [minSlider, maxSlider].forEach(s => {
+    s.min = brandMinPrice;
+    s.max = brandMaxPrice;
+    s.step = step;
+  });
+  minSlider.value = brandMinPrice;
+  maxSlider.value = brandMaxPrice;
+
   renderSkuTable();
   document.getElementById('sku-panel').style.display = 'block';
   document.getElementById('sku-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   render();
 }
 
+function updateSliderFill() {
+  const minSlider = document.getElementById('price-min');
+  const maxSlider = document.getElementById('price-max');
+  let lo = parseFloat(minSlider.value);
+  let hi = parseFloat(maxSlider.value);
+  if (lo > hi) { const t = lo; lo = hi; hi = t; }
+  const range = brandMaxPrice - brandMinPrice || 1;
+  const loPct = ((lo - brandMinPrice) / range) * 100;
+  const hiPct = ((hi - brandMinPrice) / range) * 100;
+  const fill = document.getElementById('slider-fill');
+  fill.style.left = loPct + '%';
+  fill.style.width = (hiPct - loPct) + '%';
+  document.getElementById('price-filter-readout').textContent = `${fmt(lo)} – ${fmt(hi)}`;
+}
+
 function renderSkuTable() {
-  const minVal = parseFloat(document.getElementById('price-min').value);
-  const maxVal = parseFloat(document.getElementById('price-max').value);
-  let filtered = brandSkus;
-  if (!isNaN(minVal)) filtered = filtered.filter(r => r[5] >= minVal);
-  if (!isNaN(maxVal)) filtered = filtered.filter(r => r[5] <= maxVal);
+  updateSliderFill();
+  let lo = parseFloat(document.getElementById('price-min').value);
+  let hi = parseFloat(document.getElementById('price-max').value);
+  if (lo > hi) { const t = lo; lo = hi; hi = t; }
+  const filtered = brandSkus.filter(r => r[5] >= lo && r[5] <= hi);
 
   document.getElementById('sku-table-body').innerHTML = filtered.map(r => {
     const [d,c,code,desc,o,p] = r;
@@ -292,8 +354,8 @@ document.getElementById('price-min').addEventListener('input', renderSkuTable);
 document.getElementById('price-max').addEventListener('input', renderSkuTable);
 document.getElementById('price-clear').addEventListener('click', (e) => {
   e.preventDefault();
-  document.getElementById('price-min').value = '';
-  document.getElementById('price-max').value = '';
+  document.getElementById('price-min').value = brandMinPrice;
+  document.getElementById('price-max').value = brandMaxPrice;
   renderSkuTable();
 });
 
