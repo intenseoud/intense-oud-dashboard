@@ -258,7 +258,7 @@
   <div class="kpi-row" id="kpi-row"></div>
 
   <div class="panel">
-    <h2>Top 20 brands <span style="font-size:12px; font-weight:400; color:var(--ink-soft);">— mostly Value &amp; Everyday, click a brand to see its SKUs below</span></h2>
+    <h2>Top 50 brands <span style="font-size:12px; font-weight:400; color:var(--ink-soft);">— ranked by SKU count across every category, click a brand to see its SKUs below</span></h2>
     <div class="brand-pills" id="brand-pills"></div>
   </div>
 
@@ -386,27 +386,15 @@ let sortMode = 'price-desc';
 let searchTerm = '';
 let selectedBrand = null;
 
-// --- Top 20 brands (weighted toward Value & Everyday) ---
-// Rank by SKU count within Value & Everyday first, then fill any remaining slots
-// with the next-biggest brands overall so the list always has 20 entries.
-const valueDesignerCount = {};
-CATALOG.forEach(r => { if (r[1] === "Value & Everyday Brands") valueDesignerCount[r[0]] = (valueDesignerCount[r[0]] || 0) + 1; });
-
-const valueRanked = Object.entries(valueDesignerCount)
-  .map(([d, count]) => ({ d, c: "Value & Everyday Brands", count }))
-  .sort((a, b) => b.count - a.count);
-
+// --- Top 50 brands by SKU count (across all categories) ---
 const allRanked = Object.entries(designerCount)
   .map(([key, count]) => { const [d, c] = key.split('||'); return { d, c, count }; })
   .sort((a, b) => b.count - a.count);
 
-const top20 = [];
-const seen = new Set();
-valueRanked.forEach(item => { if (top20.length < 20 && !seen.has(item.d)) { top20.push(item); seen.add(item.d); } });
-allRanked.forEach(item => { if (top20.length < 20 && !seen.has(item.d)) { top20.push(item); seen.add(item.d); } });
+const top50 = allRanked.slice(0, 50);
 
 function renderBrandPills() {
-  document.getElementById('brand-pills').innerHTML = top20.map((b, i) => {
+  document.getElementById('brand-pills').innerHTML = top50.map((b, i) => {
     const active = selectedBrand === b.d ? ' active' : '';
     return `<div class="brand-pill${active}" data-brand="${b.d.replace(/"/g,'&quot;')}">
       <span class="rank">#${i+1}</span>${b.d}<span class="count">${b.count}</span>
