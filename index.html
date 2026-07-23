@@ -150,6 +150,43 @@
     border-color: var(--oud);
     color: var(--cream);
   }
+  .brand-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .brand-pill {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    font-size: 12.5px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all .12s;
+    user-select: none;
+  }
+  .brand-pill:hover { border-color: var(--value); background: #eef3ea; }
+  .brand-pill.active {
+    background: var(--value);
+    border-color: var(--value);
+    color: #fff;
+  }
+  .brand-pill .rank {
+    font-size: 10px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .brand-pill.active .rank { color: rgba(255,255,255,0.75); }
+  .brand-pill .count {
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .brand-pill.active .count { color: rgba(255,255,255,0.85); }
   select {
     padding: 9px 10px;
     border: 1px solid var(--line);
@@ -219,6 +256,11 @@
   </header>
 
   <div class="kpi-row" id="kpi-row"></div>
+
+  <div class="panel">
+    <h2>Top 20 brands <span style="font-size:12px; font-weight:400; color:var(--ink-soft);">— mostly Value &amp; Everyday, click a brand to see its SKUs below</span></h2>
+    <div class="brand-pills" id="brand-pills"></div>
+  </div>
 
   <div class="panel">
     <h2>Catalog value by category</h2>
@@ -339,14 +381,54 @@ document.getElementById('top-designers').innerHTML = topDesigners.map(t =>
   `<div class="td-row"><div><div class="td-name">${t.d}</div><div class="td-cat">${CAT_SHORT[t.c]}</div></div><div class="td-count">${t.count}</div></div>`
 ).join('');
 
+// --- Top 20 brands (weighted toward Value & Everyday) ---
+// Rank by SKU count within Value & Everyday first, then fill any remaining slots
+// with the next-biggest brands overall so the list always has 20 entries.
+const valueDesignerCount = {};
+CATALOG.forEach(r => { if (r[1] === "Value & Everyday Brands") valueDesignerCount[r[0]] = (valueDesignerCount[r[0]] || 0) + 1; });
+
+const valueRanked = Object.entries(valueDesignerCount)
+  .map(([d, count]) => ({ d, c: "Value & Everyday Brands", count }))
+  .sort((a, b) => b.count - a.count);
+
+const allRanked = Object.entries(designerCount)
+  .map(([key, count]) => { const [d, c] = key.split('||'); return { d, c, count }; })
+  .sort((a, b) => b.count - a.count);
+
+const top20 = [];
+const seen = new Set();
+valueRanked.forEach(item => { if (top20.length < 20 && !seen.has(item.d)) { top20.push(item); seen.add(item.d); } });
+allRanked.forEach(item => { if (top20.length < 20 && !seen.has(item.d)) { top20.push(item); seen.add(item.d); } });
+
+function renderBrandPills() {
+  document.getElementById('brand-pills').innerHTML = top20.map((b, i) => {
+    const active = selectedBrand === b.d ? ' active' : '';
+    return `<div class="brand-pill${active}" data-brand="${b.d.replace(/"/g,'&quot;')}">
+      <span class="rank">#${i+1}</span>${b.d}<span class="count">${b.count}</span>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.brand-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const brand = pill.dataset.brand;
+      selectedBrand = (selectedBrand === brand) ? null : brand;
+      renderBrandPills();
+      render();
+      if (selectedBrand) document.getElementById('table-body').closest('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+renderBrandPills();
+
 // --- Table / filter / search ---
 let activeCat = 'all';
 let sortMode = 'price-desc';
 let searchTerm = '';
+let selectedBrand = null;
 
 function render() {
   let rows = CATALOG;
-  if (activeCat !== 'all') rows = rows.filter(r => r[1] === activeCat);
+  if (selectedBrand) rows = rows.filter(r => r[0] === selectedBrand);
+  else if (activeCat !== 'all') rows = rows.filter(r => r[1] === activeCat);
   if (searchTerm) {
     const t = searchTerm.toLowerCase();
     rows = rows.filter(r => r[0].toLowerCase().includes(t) || r[2].toLowerCase().includes(t) || r[3].toLowerCase().includes(t));
@@ -370,7 +452,8 @@ function render() {
       <td class="price-cell">${fmt(p)}</td>
     </tr>`;
   }).join('');
-  document.getElementById('result-count').textContent = `${total.toLocaleString()} matching SKU${total===1?'':'s'}`;
+  const brandNote = selectedBrand ? ` — filtered to ${selectedBrand}` : '';
+  document.getElementById('result-count').textContent = `${total.toLocaleString()} matching SKU${total===1?'':'s'}${brandNote}`;
   document.getElementById('page-note').style.display = total > 200 ? 'inline' : 'none';
 }
 
@@ -379,6 +462,7 @@ document.querySelectorAll('.chip').forEach(chip => {
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     activeCat = chip.dataset.cat;
+    if (selectedBrand) { selectedBrand = null; renderBrandPills(); }
     render();
   });
 });
